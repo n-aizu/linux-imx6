@@ -1847,8 +1847,6 @@ fec_enet_open(struct net_device *ndev)
 
 	fec_enet_clk_enable(ndev, true);
 
-	napi_enable(&fep->napi);
-
 	/* I should reset the ring buffers here, but I don't yet know
 	 * a simple way to do that.
 	 */
@@ -1864,6 +1862,7 @@ fec_enet_open(struct net_device *ndev)
 		return ret;
 	}
 
+	napi_enable(&fep->napi);
 	phy_start(fep->phy_dev);
 	netif_start_queue(ndev);
 	fep->opened = 1;
