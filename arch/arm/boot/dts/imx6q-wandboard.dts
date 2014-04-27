@@ -44,7 +44,3 @@
 &sata {
 	status = "okay";
 };
-
-&pcie {
-	reset-gpio = <&gpio3 31 0>;
-};

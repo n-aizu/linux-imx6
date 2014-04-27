@@ -44,7 +44,3 @@
 &usdhc2 {
 	status = "disabled";
 };
-
-&pcie {
-	reset-gpio = <&gpio3 31 0>;
-};
