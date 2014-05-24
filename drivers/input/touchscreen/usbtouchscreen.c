@@ -319,8 +319,8 @@ static int egalax2_read_data(struct usbtouch_usb *dev, unsigned char *pkt)
 	if ((pkt[0] & EGALAX2_PKT_TYPE_MASK) != EGALAX2_PKT_TYPE_REPT)
 		return 0;
 
-	dev->y = ((pkt[4] & 0x0F) << 7) | (pkt[3] & 0x7F);
-	dev->x = ((pkt[2] & 0x0F) << 7) | (pkt[1] & 0x7F);
+	dev->x = ((pkt[3] & 0x0F) << 7) | (pkt[4] & 0x7F);
+	dev->y = 0x07ff - (((pkt[1] & 0x0F) << 7) | (pkt[2] & 0x7F));
 	dev->touch = pkt[0] & 0x01;
 
 	return 1;
