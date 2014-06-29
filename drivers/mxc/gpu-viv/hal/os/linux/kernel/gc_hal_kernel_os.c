@@ -955,7 +955,9 @@ _QueryProcessPageTable(
     OUT gctUINT32 * Address
     )
 {
+#if !(defined(CONFIG_PREEMPT_RT_FULL) && (USE_SPLIT_PTLOCKS > 0))
     spinlock_t *lock;
+#endif
     gctUINTPTR_T logical = (gctUINTPTR_T)Logical;
     pgd_t *pgd;
     pud_t *pud;
@@ -985,6 +987,23 @@ _QueryProcessPageTable(
         return gcvSTATUS_NOT_FOUND;
     }
 
+#if defined(CONFIG_PREEMPT_RT_FULL) && (USE_SPLIT_PTLOCKS > 0)
+    /* Workaround */
+    pte = pte_offset_map(pmd, logical);
+    if (!pte)
+    {
+        return gcvSTATUS_NOT_FOUND;
+    }
+
+    if (!pte_present(*pte))
+    {
+        pte_unmap(pte);
+        return gcvSTATUS_NOT_FOUND;
+    }
+
+    *Address = (pte_pfn(*pte) << PAGE_SHIFT) | (logical & ~PAGE_MASK);
+    pte_unmap(pte);
+#else
     pte = pte_offset_map_lock(current->mm, pmd, logical, &lock);
     if (!pte)
     {
@@ -999,6 +1018,7 @@ _QueryProcessPageTable(
 
     *Address = (pte_pfn(*pte) << PAGE_SHIFT) | (logical & ~PAGE_MASK);
     pte_unmap_unlock(pte, lock);
+#endif
 
     return gcvSTATUS_OK;
 }
