@@ -40,3 +40,7 @@
 &epdc {
 	status = "disabled";
 };
+
+&usdhc2 {
+	status = "disabled";
+};
