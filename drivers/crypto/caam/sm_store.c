@@ -814,6 +814,8 @@ int caam_sm_startup(struct platform_device *pdev)
 		}
 	}
 
+	spin_lock_init(&smpriv->kslock);
+
 	kfree(lpagedesc);
 
 	sm_init_keystore(smdev);
