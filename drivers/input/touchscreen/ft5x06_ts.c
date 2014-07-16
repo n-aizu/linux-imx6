@@ -46,6 +46,8 @@ module_param_array(calibration, int, NULL, S_IRUGO | S_IWUSR);
 static int screenres[2] = {1024, 600};
 module_param_array(screenres, int, NULL, S_IRUGO | S_IWUSR);
 
+#define MAX_TOUCHES 12
+
 static void translate(int *px, int *py)
 {
 	int x, y, x1, y1;
@@ -73,6 +75,7 @@ static void translate(int *px, int *py)
 struct point {
 	int	x;
 	int	y;
+	int	id;
 };
 
 struct ft5x06_ts {
@@ -124,6 +127,7 @@ static inline void ts_evt_add(struct ft5x06_ts *ts,
 #ifdef USE_ABS_MT
 			input_event(idev, EV_ABS, ABS_MT_POSITION_X, p[i].x);
 			input_event(idev, EV_ABS, ABS_MT_POSITION_Y, p[i].y);
+			input_event(idev, EV_ABS, ABS_MT_TRACKING_ID, p[i].id);
 			input_event(idev, EV_ABS, ABS_MT_TOUCH_MAJOR, 1);
 			input_mt_sync(idev);
 #else
@@ -173,6 +177,7 @@ static inline int ts_register(struct ft5x06_ts *ts)
 #ifdef USE_ABS_MT
 	input_set_abs_params(idev, ABS_MT_POSITION_X, 0, screenres[0]-1, 0, 0);
 	input_set_abs_params(idev, ABS_MT_POSITION_Y, 0, screenres[1]-1, 0, 0);
+	input_set_abs_params(idev, ABS_MT_TRACKING_ID, 0, MAX_TOUCHES, 0, 0);
 	input_set_abs_params(idev, ABS_X, 0, screenres[0]-1, 0, 0);
 	input_set_abs_params(idev, ABS_Y, 0, screenres[1]-1, 0, 0);
 	input_set_abs_params(idev, ABS_MT_TOUCH_MAJOR, 0, 1, 0, 0);
@@ -299,8 +304,9 @@ static void ts_work_func(struct work_struct *work)
 	struct ft5x06_ts *ts = container_of(work,
 			struct ft5x06_ts, work);
 	int ret;
-	struct point points[5];
-	unsigned char buf[33];
+	struct point points[MAX_TOUCHES];
+	unsigned char buf[3+(6*MAX_TOUCHES)];
+
 	unsigned char startch[1] = { 0 };
 	struct i2c_msg readpkt[2] = {
 		{ts->client->addr, 0, 1, startch},
@@ -324,16 +330,17 @@ static void ts_work_func(struct work_struct *work)
 			printHex(buf, sizeof(buf));
 #endif
 			buttons = buf[2];
-			if (buttons > 5) {
+			if (buttons > MAX_TOUCHES) {
 				printk(KERN_ERR
 				       "%s: invalid button count %02x\n",
 				       __func__, buttons);
-				buttons = 0 ;
+				buttons = MAX_TOUCHES;
 			} else {
 				for (i = 0; i < buttons; i++) {
-					points[i].x = ((p[0] << 8)
+					points[i].x = (((p[0] & 0x0f) << 8)
 						       | p[1]) & 0x7ff;
-					points[i].y = ((p[2] << 8)
+					points[i].id = (p[2]>>4);
+					points[i].y = (((p[2] & 0x0f) << 8)
 						       | p[3]) & 0x7ff;
 					p += 6;
 				}
@@ -570,6 +577,7 @@ static int ts_remove(struct i2c_client *client)
 	remove_proc_entry(procentryname, 0);
 	if (ts == gts) {
 		gts = NULL;
+		gpio_free(ts->gp);
 		ts_deregister(ts);
 	} else {
 		printk(KERN_ERR "%s: Error ts!=gts\n", client_name);
