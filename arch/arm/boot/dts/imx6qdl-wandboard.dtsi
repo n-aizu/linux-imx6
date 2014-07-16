@@ -421,6 +421,7 @@ reference manual.
 
 &pcie {
 	status = "okay";
+	reset-gpio = <&gpio3 31 0>;
 };
 
 #if 0
