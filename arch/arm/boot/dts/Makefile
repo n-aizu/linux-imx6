@@ -129,8 +129,10 @@ dtb-$(CONFIG_ARCH_MXC) += \
 	imx6dl-sabresd-ldo.dtb \
 	imx6dl-sabresd-pf200.dtb \
 	imx6dl-wandboard.dtb \
+	imx6dl-wandboard-jp.dtb \
 	imx6dl-hummingboard.dtb \
 	imx6q-wandboard.dtb \
+	imx6q-wandboard-jp.dtb \
 	imx6q-arm2.dtb \
 	imx6q-bt.dtb \
 	imx6q-mtp.dtb \
