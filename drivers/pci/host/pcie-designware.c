@@ -586,13 +586,13 @@ static int dw_pcie_rd_conf(struct pci_bus *bus, u32 devfn, int where,
 		return PCIBIOS_DEVICE_NOT_FOUND;
 	}
 
-	spin_lock_irqsave(&pp->conf_lock, flags);
+	raw_spin_lock_irqsave(&pp->conf_lock, flags);
 	if (bus->number != pp->root_bus_nr)
 		ret = dw_pcie_rd_other_conf(pp, bus, devfn,
 						where, size, val);
 	else
 		ret = dw_pcie_rd_own_conf(pp, where, size, val);
-	spin_unlock_irqrestore(&pp->conf_lock, flags);
+	raw_spin_unlock_irqrestore(&pp->conf_lock, flags);
 
 	return ret;
 }
@@ -612,13 +612,13 @@ static int dw_pcie_wr_conf(struct pci_bus *bus, u32 devfn,
 	if (dw_pcie_valid_config(pp, bus, PCI_SLOT(devfn)) == 0)
 		return PCIBIOS_DEVICE_NOT_FOUND;
 
-	spin_lock_irqsave(&pp->conf_lock, flags);
+	raw_spin_lock_irqsave(&pp->conf_lock, flags);
 	if (bus->number != pp->root_bus_nr)
 		ret = dw_pcie_wr_other_conf(pp, bus, devfn,
 						where, size, val);
 	else
 		ret = dw_pcie_wr_own_conf(pp, where, size, val);
-	spin_unlock_irqrestore(&pp->conf_lock, flags);
+	raw_spin_unlock_irqrestore(&pp->conf_lock, flags);
 
 	return ret;
 }
