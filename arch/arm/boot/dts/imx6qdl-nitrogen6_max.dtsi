@@ -67,16 +67,6 @@
 			gpio = <&gpio3 22 0>;
 			enable-active-high;
 		};
-
-		wilink_wl_en: tiwi_wlan {
-			compatible = "regulator-fixed";
-			regulator-name = "wilink_wl_en";
-			regulator-min-microvolt = <1800000>;
-			regulator-max-microvolt = <1800000>;
-			gpio = <&gpio6 15 0>;
-			startup-delay-us = <70000>;
-			enable-active-high;
-		};
 	};
 
 	gpio-keys {
@@ -243,7 +233,7 @@
 	wlan {
 		compatible = "ti,wilink6";
 		interrupt-parent = <&gpio6>;
-		interrupts = <14 IRQ_TYPE_LEVEL_HIGH>;
+		interrupts = <11 IRQ_TYPE_LEVEL_HIGH>;
 		clocks = <&refclock>;
 		clock-names = "refclock";
 
@@ -364,6 +354,7 @@
 	phy-reset-gpios = <&gpio1 27 0>;
 	status = "okay";
 #endif
+	status = "okay";
 
 	#address-cells = <0>;
 	#size-cells = <1>;
@@ -556,6 +547,7 @@
 				MX6QDL_PAD_ENET_TX_EN__GPIO1_IO28	0x1b0b0		/* ethernet phy interrupt */
 				MX6QDL_PAD_SD3_DAT5__GPIO7_IO00		0x80000000	/* USDHC3 CD */
 				MX6QDL_PAD_GPIO_0__CCM_CLKO1		0x000b0		/* SGTL5000 sys_mclk */
+				MX6QDL_PAD_ENET_TXD1__GPIO1_IO29	0x1b0b0		/* SGTL5000 amplifier mute, weak pull-up */
 				MX6QDL_PAD_GPIO_2__GPIO1_IO02		0x80000000	/* CAN standby */
 				MX6QDL_PAD_GPIO_9__GPIO1_IO09		0x80000000	/* I2C3 touch screen interrupt */
 				MX6QDL_PAD_DI0_PIN4__GPIO4_IO20		0x1b0b0		/* tsc2004 interrupt */
@@ -565,7 +557,8 @@
 				MX6QDL_PAD_EIM_D29__GPIO3_IO29		0x000b0		/* ov5642 Power Down */
 				MX6QDL_PAD_GPIO_4__GPIO1_IO04		0x000b0		/* ov5642 Reset */
 				MX6QDL_PAD_GPIO_17__GPIO7_IO12		0x0b0b0		/* USB Hub Reset */
-				MX6QDL_PAD_NANDF_CS1__GPIO6_IO14	0x100b0		/* wl12xx_wl_irq */
+				MX6QDL_PAD_NANDF_CS0__GPIO6_IO11	0x100b0		/* wl12xx_wl_irq */
+				MX6QDL_PAD_NANDF_CS1__SD3_VSELECT	0x100b0		/* sd3 voltage select */
 				MX6QDL_PAD_NANDF_CS2__GPIO6_IO15	0x000b0		/* wl12xx_wl_en */
 				MX6QDL_PAD_NANDF_CS3__GPIO6_IO16	0x000b0		/* wl12xx_bt_en */
 				MX6QDL_PAD_SD1_CLK__OSC32K_32K_OUT	0x000b0		/* TiWi slow clock */
@@ -713,8 +706,8 @@
 	bus-width = <4>;
 	non-removable;
 	vmmc-supply = <&reg_3p3v>;
-	vqmmc-supply = <&wilink_wl_en>;
 	vqmmc-1-8-v;
+	power-gpio = <&gpio6 15 0>;
 	ocr-limit = <0x80>;     /* 1.65v - 1.95v */
 	power-off-card;
 	keep-power-in-suspend;
