@@ -243,6 +243,54 @@
 	status = "okay";
 };
 
+&iomuxc {
+	ecspi1 {
+		pinctrl_ecspi1_3: ecspi1grp-3 {
+			fsl,pins = <
+				MX6QDL_PAD_DISP0_DAT20__ECSPI1_SCLK 0x100b1
+				MX6QDL_PAD_DISP0_DAT21__ECSPI1_MOSI 0x100b1
+				MX6QDL_PAD_DISP0_DAT22__ECSPI1_MISO 0x100b1
+			>;
+		};
+	};
+	ecspi2 {
+		pinctrl_ecspi2_cs_1: ecspi2_cs_grp-1 {
+			fsl,pins = <
+				MX6QDL_PAD_DISP0_DAT18__GPIO5_IO12 0x80000000
+			>;
+		};
+		pinctrl_ecspi2_1: ecspi2grp-1 {
+			fsl,pins = <
+				MX6QDL_PAD_DISP0_DAT16__ECSPI2_MOSI 0x100b1
+				MX6QDL_PAD_DISP0_DAT17__ECSPI2_MISO 0x100b1
+				MX6QDL_PAD_DISP0_DAT19__ECSPI2_SCLK 0x100b1
+			>;
+		};
+	};
+	ecspi3 {
+		pinctrl_ecspi3_cs_1: ecspi3_cs_grp-1 {
+			fsl,pins = <
+				MX6QDL_PAD_DISP0_DAT3__GPIO4_IO24 0x80000000
+			>;
+		};
+		pinctrl_ecspi3_cs_2: ecspi3_cs_grp-2 {
+			fsl,pins = <
+				MX6QDL_PAD_DISP0_DAT4__GPIO4_IO25 0x80000000
+			>;
+		};
+		pinctrl_ecspi3_cs_3: ecspi3_cs_grp-3 {
+			fsl,pins = <
+				MX6QDL_PAD_DISP0_DAT5__GPIO4_IO26 0x80000000
+			>;
+		};
+		pinctrl_ecspi3_cs_4: ecspi3_cs_grp-4 {
+			fsl,pins = <
+				MX6QDL_PAD_DISP0_DAT6__GPIO4_IO27 0x80000000
+			>;
+		};
+	};
+};
+
 &ecspi1 {
 	fsl,spi-num-chipselects = <1>;
 	cs-gpios = <&gpio5 17 0>;
@@ -477,7 +525,7 @@
                                 MX6QDL_PAD_GPIO_19__GPIO4_IO05          0x1b0b0
 				MX6QDL_PAD_EIM_D19__GPIO3_IO19		0x80000000	/* spi-nor CS */
 				MX6QDL_PAD_EIM_D22__GPIO3_IO22		0x80000000	/* otg power en */
-				MX6QDL_PAD_EIM_D23__GPIO3_IO23		0x80000000	/* ethernet phy reset */
+				MX6QDL_PAD_EIM_D23__GPIO3_IO23		0x0f0b0		/* ethernet phy reset */
 				MX6QDL_PAD_ENET_TX_EN__GPIO1_IO28	0x1b0b0		/* ethernet phy interrupt */
 				MX6QDL_PAD_SD3_DAT5__GPIO7_IO00		0x80000000	/* USDHC3 CD */
 				MX6QDL_PAD_SD3_DAT4__GPIO7_IO01		0x1f0b0		/* USDHC3 WP */
@@ -494,7 +542,7 @@
 				MX6QDL_PAD_GPIO_8__GPIO1_IO08		0x000b0		/* ov5642 Reset */
 				MX6QDL_PAD_GPIO_17__GPIO7_IO12		0x0b0b0		/* USB Hub Reset */
 			>;
-			
+		
 		};
 
 		pinctrl_lcd_gpios_1: hoggrp-2 {
@@ -549,9 +597,6 @@
 #endif
 
 &mipi_csi {
-	ipu_id = <0>;
-	csi_id = <1>;
-	v_channel = <0>;
 	lanes = <2>;
 	status = "okay";
 };
