@@ -1,35 +1,31 @@
 linux-imx6
 ==========
 
-Boundary Devices Kernel tree for i.MX6.
+Kernel tree for i.MX6.  
 
-This repository contains kernel source trees for Boundary Devices'
-i.MX6 based boards: the [SABRE Lite][sabrelite], [Nitrogen6X][nitrogen6x],
-[Nitrogen6X SOM][nitrogen6x-som] and [Nitrogen6 Lite][nitrogen6-lite]
-based largely on Freescale's kernel trees at [git.freescale.com][freescale].
+This repository is forked from [Boundary Devices linux-imx6 kernel tree][linux-imx6] and  
+merged with [Wandboard linux kernel tree][wandboard-linux].  
+This repository also based on [SolidRun linux-linaro-stable-mx6 kernel tree][solidrun-linaro].  
 
-Latest kernel releases:
+This kernel tree includes patches for several peripheral devices.  
+Target devices are:  
+ - Intel 802.11 a/b/g/n/ac PCIe mini card.
+ - Atheros 802.11 a/b/g/n PCIe mini card.
+ - faytech Touchscreen Monitor.
+ - TechNexion EDM1-Fairy Carrier Board(PCIe only).
 
-Android
+Branch
 -----------
-Latest Jellybean sources are in branch [boundary-jb4.3\_1.0.0-ga][latest-android]
+The latest 3.10.17 kernel is in branch [boundary-wand-imx\_3.10.17\_1.0.1\_ga-rt][latest-3.10.17]  
 
-Non-Android
-------------------
-The latest 3.0.35 kernel is in branch [boundary-imx\_3.0.35\_4.1.0][latest-3.0.35]
-
-The latest 3.10.17 kernel is in branch [boundary-imx\_3.10.17\_1.0.0\_ga][latest-3.10.17]
-
-These branches are based on Freescale releases of the same name (minus the 'boundary').
+Config
+-----------
+For non-RT-Preempt kernel: nitrogen6x_defconfig/wandboard_defconfig  
+For RT-Preempt kernel: nitrogen6x_rt_defconfig/wandboard_rt_defconfig  
 
 
-[freescale]: http://git.freescale.com/git/cgit.cgi/imx/linux-2.6-imx.git/ "Freescale Git repository"
-[sabrelite]:http://boundarydevices.com/sabre-lite-imx6-sbc "SABRE Lite product page"
-[nitrogen6x]:http://boundarydevices.com/nitrogen6x-board-imx6-arm-cortex-a9-sbc "Nitrogen6X product page"
-[nitrogen6x-som]:http://boundarydevices.com/products/nitrogen6x-som "Nitrogen6X SOM product page"
-[nitrogen6-lite]:http://boundarydevices.com/products/nitrogen6_lite "Nitrogen6_Lite product page"
-[latest-android]:http://github.com/boundarydevices/linux-imx6/tree/boundary-jb4.3_1.0.0-ga "Boundary Jellybean kernel tree"
-[latest-3.0.35]:http://github.com/boundarydevices/linux-imx6/tree/boundary-imx_3.0.35_4.1.0 "Boundary 3.0.35 4.1.0 kernel tree"
-[latest-3.10.17]:http://github.com/boundarydevices/linux-imx6/tree/boundary-imx_3.10.17_1.0.0_ga "Boundary 3.10.17 kernel tree"
-
+[linux-imx6]: https://github.com/boundarydevices/linux-imx6.git "Boundary Devices Git repository"
+[wandboard-linux]: https://github.com/wandboard-org/linux.git "Wandboard Git repository"
+[solidrun-linaro]: https://github.com/SolidRun/linux-linaro-stable-mx6.git "SolidRun Git repository"
+[latest-3.10.17]: https://github.com/n-aizu/linux-imx6/tree/boundary-wand-imx_3.10.17_1.0.1_ga-rt "3.10.17 kernel tree"
 
