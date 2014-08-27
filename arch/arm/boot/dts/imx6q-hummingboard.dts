@@ -17,6 +17,7 @@
 	fsl,transmit-level-mV = <1104>;
 	fsl,transmit-boost-mdB = <0>;
 	fsl,transmit-atten-16ths = <9>;
+	fsl,no-spread-spectrum;
 };
 
 &pcie {
