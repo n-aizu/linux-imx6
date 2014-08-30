@@ -251,7 +251,7 @@
 			fsl,pins = <MX6QDL_PAD_ENET_RX_ER__USB_OTG_ID 0x13059>;
 		};
 
-		pinctrl_pcie: pciegrp {
+		pinctrl_hummingboard_pcie: hummingboard_pciegrp {
 			fsl,pins = <
 				MX6QDL_PAD_EIM_DA4__GPIO3_IO04	0x000b0     /* pcie reset */
 			>;

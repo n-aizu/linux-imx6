@@ -23,6 +23,6 @@
 &pcie {
 	status = "okay";
 	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_pcie>;
+	pinctrl-0 = <&pinctrl_hummingboard_pcie>;
 	reset-gpio = <&gpio3 4 0>;
 };
