@@ -63,18 +63,18 @@ static int wand_rfkill_wifi_probe(struct device *dev,
 	int ret;
 	int wl_ref_on, wl_rst_n, wl_reg_on, wl_wake, wl_host_wake;
 
-	if(wand_rev){
-	    wl_ref_on = of_get_named_gpio(np, "wifi-ref-on-revc1", 0);
-	    wl_rst_n = of_get_named_gpio(np, "wifi-rst-n-revc1", 0);
-	}
-	else {
-	    wl_ref_on = of_get_named_gpio(np, "wifi-ref-on", 0);
-	    wl_rst_n = of_get_named_gpio(np, "wifi-rst-n", 0);
-	}
-
 	wl_reg_on = of_get_named_gpio(np, "wifi-reg-on", 0);
 	wl_wake = of_get_named_gpio(np, "wifi-wake", 0);
 	wl_host_wake = of_get_named_gpio(np, "wifi-host-wake", 0);
+
+	if(wand_rev){
+		wl_ref_on = of_get_named_gpio(np, "wifi-ref-on-revc1", 0);
+		wl_rst_n = wl_reg_on;
+	}
+	else {
+		wl_ref_on = of_get_named_gpio(np, "wifi-ref-on", 0);
+		wl_rst_n = of_get_named_gpio(np, "wifi-rst-n", 0);
+	}
 
 	if (!gpio_is_valid(wl_rst_n) || !gpio_is_valid(wl_ref_on) ||
 			!gpio_is_valid(wl_reg_on) || !gpio_is_valid(wl_wake) ||
@@ -105,7 +105,7 @@ static int wand_rfkill_wifi_probe(struct device *dev,
 	gpio_direction_input(wl_host_wake);
 
 	rfkill->shutdown_name = "wifi_shutdown";
-	rfkill->shutdown_gpio = wl_wake;
+	rfkill->shutdown_gpio = wl_reg_on;
 
 	rfkill->rfkill_dev = rfkill_alloc("wifi-rfkill", dev, RFKILL_TYPE_WLAN,
 			&wand_rfkill_ops, rfkill);
@@ -175,7 +175,7 @@ static int wand_rfkill_bt_probe(struct device *dev,
 	gpio_direction_input(bt_host_wake);
 
 	rfkill->shutdown_name = "bluetooth_shutdown";
-	rfkill->shutdown_gpio = bt_wake;
+	rfkill->shutdown_gpio = bt_on;
 
 	rfkill->rfkill_dev = rfkill_alloc("bluetooth-rfkill", dev, RFKILL_TYPE_BLUETOOTH,
 			&wand_rfkill_ops, rfkill);
