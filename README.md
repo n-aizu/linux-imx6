@@ -20,14 +20,14 @@ The latest 3.10.17 kernel is in branch [boundary-wand-imx\_3.10.17\_1.0.1\_ga-rt
 
 Target
 -----------
-BD-SL-i.MX6(SABRE Lite)
-Wandboard
-Hummingboard
+BD-SL-i.MX6(SABRE Lite)  
+Wandboard  
+Hummingboard  
 
 Config
 -----------
-For non-RT-Preempt kernel: nitrogen6x_defconfig/wandboard_defconfig/hummingboard_defconfig
-For RT-Preempt kernel: nitrogen6x_rt_defconfig/wandboard_rt_defconfig/hummingboard_rt_defconfig
+For non-RT-Preempt kernel: nitrogen6x_defconfig/wandboard_defconfig/hummingboard_defconfig  
+For RT-Preempt kernel: nitrogen6x_rt_defconfig/wandboard_rt_defconfig/hummingboard_rt_defconfig  
 
 
 [linux-imx6]: https://github.com/boundarydevices/linux-imx6.git "Boundary Devices Git repository"
