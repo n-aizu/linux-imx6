@@ -1136,6 +1136,20 @@ void stmpe_of_probe(struct stmpe_platform_data *pdata, struct device_node *np)
 			pdata->blocks |= STMPE_BLOCK_ROTATOR;
 		}
 	}
+
+	pdata->irq_over_gpio = of_property_read_bool(np, "irq_over_gpio");
+	if (pdata->irq_over_gpio) {
+		int ret;
+
+		ret = of_property_read_u32(np, "irq_trigger", &pdata->irq_trigger);
+		if (ret)
+			pdata->irq_trigger = IRQF_TRIGGER_FALLING;
+
+		pdata->irq_gpio = of_get_named_gpio(np, "irq_gpio", 0);
+		if (!gpio_is_valid(pdata->irq_gpio)) {
+			pdata->irq_over_gpio = 0;
+		}
+	}
 }
 
 /* Called from client specific probe routines */
