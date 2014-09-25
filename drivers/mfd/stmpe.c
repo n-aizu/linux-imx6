@@ -1145,9 +1145,10 @@ void stmpe_of_probe(struct stmpe_platform_data *pdata, struct device_node *np)
 		if (ret)
 			pdata->irq_trigger = IRQF_TRIGGER_FALLING;
 
-		ret = of_property_read_u32(np, "irq_gpio", (u32 *)&pdata->irq_gpio);
-		if (ret)
+		pdata->irq_gpio = of_get_named_gpio(np, "irq_gpio", 0);
+		if (!gpio_is_valid(pdata->irq_gpio)) {
 			pdata->irq_over_gpio = 0;
+		}
 	}
 }
 
