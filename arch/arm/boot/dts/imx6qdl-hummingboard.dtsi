@@ -206,7 +206,6 @@
 		pinctrl_hummingboard_usdhc2_aux: hummingboard-usdhc2-aux {
 			fsl,pins = <
 				MX6QDL_PAD_GPIO_4__GPIO1_IO04    0x1f071
-				MX6QDL_PAD_KEY_ROW1__SD2_VSELECT 0x1b071
 			>;
 		};
 
@@ -221,27 +220,6 @@
 			>;
 		};
 
-		pinctrl_hummingboard_usdhc2_100mhz: hummingboard-usdhc2-100mhz {
-			fsl,pins = <
-				MX6QDL_PAD_SD2_CMD__SD2_CMD    0x170b9
-				MX6QDL_PAD_SD2_CLK__SD2_CLK    0x100b9
-				MX6QDL_PAD_SD2_DAT0__SD2_DATA0 0x170b9
-				MX6QDL_PAD_SD2_DAT1__SD2_DATA1 0x170b9
-				MX6QDL_PAD_SD2_DAT2__SD2_DATA2 0x170b9
-				MX6QDL_PAD_SD2_DAT3__SD2_DATA3 0x130b9
-			>;
-		};
-
-		pinctrl_hummingboard_usdhc2_200mhz: hummingboard-usdhc2-200mhz {
-			fsl,pins = <
-				MX6QDL_PAD_SD2_CMD__SD2_CMD    0x170f9
-				MX6QDL_PAD_SD2_CLK__SD2_CLK    0x100f9
-				MX6QDL_PAD_SD2_DAT0__SD2_DATA0 0x170f9
-				MX6QDL_PAD_SD2_DAT1__SD2_DATA1 0x170f9
-				MX6QDL_PAD_SD2_DAT2__SD2_DATA2 0x170f9
-				MX6QDL_PAD_SD2_DAT3__SD2_DATA3 0x130f9
-			>;
-		};
 		pinctrl_hummingboard_usbotg: hummingboard-usbotg {
 			/*
 			 * RX_ER is on third header on i.MX6 which is not used.
@@ -290,10 +268,8 @@
 };
 
 &usdhc2 {
-	pinctrl-names = "default", "state_100mhz", "state_200mhz";
+	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_hummingboard_usdhc2_aux &pinctrl_hummingboard_usdhc2>;
-	pinctrl-1 = <&pinctrl_hummingboard_usdhc2_aux &pinctrl_hummingboard_usdhc2_100mhz>;
-	pinctrl-2 = <&pinctrl_hummingboard_usdhc2_aux &pinctrl_hummingboard_usdhc2_200mhz>;
 	vmmc-supply = <&reg_3p3v>;
 	cd-gpios = <&gpio1 4 0>;
 	status = "okay";
