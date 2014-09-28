@@ -762,6 +762,7 @@ static int ldo_regulator_enable(struct regulator_dev *dev)
 	struct snd_soc_codec *codec = (struct snd_soc_codec *)ldo->codec_data;
 	int reg;
 
+	dev_info(codec->dev, "%s(): enabled %u\n", __func__, ldo->enabled);
 	if (ldo_regulator_is_enabled(dev))
 		return 0;
 
@@ -794,9 +795,17 @@ static int ldo_regulator_disable(struct regulator_dev *dev)
 	struct ldo_regulator *ldo = rdev_get_drvdata(dev);
 	struct snd_soc_codec *codec = (struct snd_soc_codec *)ldo->codec_data;
 
+	dev_info(codec->dev, "%s(): enabled %u\n", __func__, ldo->enabled);
+
+	snd_soc_update_bits(codec, SGTL5000_CHIP_ANA_POWER,
+				SGTL5000_LINREG_SIMPLE_POWERUP,
+				SGTL5000_LINREG_SIMPLE_POWERUP);
+
 	snd_soc_update_bits(codec, SGTL5000_CHIP_ANA_POWER,
 				SGTL5000_LINEREG_D_POWERUP,
 				0);
+
+	dev_info(codec->dev, "%s: ANA_POWER = 0x%04x\n", __func__, snd_soc_read(codec, SGTL5000_CHIP_ANA_POWER));
 
 	/* clear voltage info */
 	snd_soc_update_bits(codec, SGTL5000_CHIP_LINREG_CTRL,
@@ -854,6 +863,7 @@ static int ldo_regulator_register(struct snd_soc_codec *codec,
 	config.dev = codec->dev;
 	config.driver_data = ldo;
 	config.init_data = init_data;
+	config.ena_gpio = -EINVAL;
 
 	ldo->dev = regulator_register(&ldo->desc, &config);
 	if (IS_ERR(ldo->dev)) {
@@ -1132,8 +1142,16 @@ static int sgtl5000_set_power_regs(struct snd_soc_codec *codec)
 		 * if vddio and vddd > 3.1v,
 		 * charge pump should be clean before set ana_pwr
 		 */
+
+		/*
+		 * FIXME: this is total crap - we have read this register above into
+		 * ana_pwr, which we then modify (above), and then write back to the
+		 * register below. This modification just gets completely overwritten.
+		 */
+#if 0
 		snd_soc_update_bits(codec, SGTL5000_CHIP_ANA_POWER,
 				SGTL5000_VDDC_CHRGPMP_POWERUP, 0);
+#endif
 
 		/* VDDC use VDDIO rail */
 		lreg_ctrl |= SGTL5000_VDDC_ASSN_OVRD;
@@ -1318,6 +1336,9 @@ static int sgtl5000_probe(struct snd_soc_codec *codec)
 		return ret;
 	}
 
+	if (!devres_open_group(codec->dev, NULL, GFP_KERNEL))
+		return -ENOMEM;
+
 	ret = sgtl5000_enable_regulators(codec);
 	if (ret)
 		return ret;
@@ -1377,6 +1398,7 @@ err:
 						sgtl5000->supplies);
 	regulator_bulk_free(ARRAY_SIZE(sgtl5000->supplies),
 				sgtl5000->supplies);
+	devres_release_group(codec->dev, NULL);
 	ldo_regulator_remove(codec);
 
 	return ret;
@@ -1392,6 +1414,7 @@ static int sgtl5000_remove(struct snd_soc_codec *codec)
 						sgtl5000->supplies);
 	regulator_bulk_free(ARRAY_SIZE(sgtl5000->supplies),
 				sgtl5000->supplies);
+	devres_release_group(codec->dev, NULL);
 	ldo_regulator_remove(codec);
 
 	return 0;

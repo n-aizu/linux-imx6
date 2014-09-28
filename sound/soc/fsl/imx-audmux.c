@@ -258,8 +258,7 @@ static int imx_audmux_probe(struct platform_device *pdev)
 
 	pinctrl = devm_pinctrl_get_select_default(&pdev->dev);
 	if (IS_ERR(pinctrl)) {
-		dev_err(&pdev->dev, "setup pinctrl failed!");
-		return PTR_ERR(pinctrl);
+		dev_dbg(&pdev->dev, "setup pinctrl failed!");
 	}
 
 	audmux_clk = devm_clk_get(&pdev->dev, "audmux");

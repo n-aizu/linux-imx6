@@ -58,6 +58,19 @@
 		};
 	};
 
+	sound-sgtl5000 {
+		compatible = "fsl,imx-audio-sgtl5000";
+		model = "On-board Codec";
+		ssi-controller = <&ssi1>;
+		audio-codec = <&sgtl5000>;
+		audio-routing =
+			"MIC_IN", "Mic Jack",
+			"Mic Jack", "Mic Bias",
+			"Headphone Jack", "HP_OUT";
+		mux-int-port = <1>;
+		mux-ext-port = <5>;
+	};
+
 	sound-spdif {
 		compatible = "fsl,imx-audio-spdif";
 		model = "imx-spdif";
@@ -139,6 +152,10 @@
         status = "okay";
 };
 
+&audmux {
+	status = "okay";
+};
+
 &i2c1 {
 	clock-frequency = <100000>;
 	pinctrl-names = "default";
@@ -149,6 +166,16 @@
 	rtc: pcf8523@68 {
 		compatible = "nxp,pcf8523";
 		reg = <0x68>;
+	};
+
+	sgtl5000: sgtl5000@0a {
+		compatible = "fsl,sgtl5000";
+		pinctrl-0 = <&pinctrl_hummingboard_sgtl5000>;
+		pinctrl-names = "default";
+		reg = <0x0a>;
+		clocks = <&clks 201>;
+		VDDA-supply = <&reg_3p3v>;
+		VDDIO-supply = <&reg_3p3v>;
 	};
 };
 
@@ -184,6 +211,16 @@
 		pinctrl_hummingboard_hdmi: hummingboard-hdmi {
 			fsl,pins = <
 				MX6QDL_PAD_KEY_ROW2__HDMI_TX_CEC_LINE 0x1f8b0
+			>;
+		};
+
+		pinctrl_hummingboard_sgtl5000: hummingboard-sgtl5000 {
+			fsl,pins = <
+				MX6QDL_PAD_DISP0_DAT19__AUD5_RXD 0x130b0 /*brk*/
+				MX6QDL_PAD_KEY_COL0__AUD5_TXC 0x130b0 /*ok*/
+				MX6QDL_PAD_KEY_ROW0__AUD5_TXD 0x110b0 /*brk*/
+				MX6QDL_PAD_KEY_COL1__AUD5_TXFS 0x130b0 /*ok*/
+				MX6QDL_PAD_GPIO_5__CCM_CLKO1 0x130b0
 			>;
 		};
 
@@ -242,6 +279,11 @@
 &spdif {
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_hummingboard_spdif>;
+	status = "okay";
+};
+
+&ssi1 {
+	fsl,mode = "i2s-slave";
 	status = "okay";
 };
 
