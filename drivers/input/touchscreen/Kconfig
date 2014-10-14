@@ -825,6 +825,15 @@ config TOUCHSCREEN_USB_E2I
 	bool "e2i Touchscreen controller (e.g. from Mimo 740)" if EXPERT
 	depends on TOUCHSCREEN_USB_COMPOSITE
 
+config TOUCHSCREEN_USB_E2I_REVERSE
+	default n
+	depends on TOUCHSCREEN_USB_E2I
+	bool "e2i Special reverse MSB / LSB Packet" if EXPERT
+	depends on TOUCHSCREEN_USB_E2I
+        help
+          Special reversed MSB / LSB packet and Reversed X / Y
+          - Mimo 720S
+
 config TOUCHSCREEN_USB_ZYTRONIC
 	default y
 	bool "Zytronic controller" if EXPERT
