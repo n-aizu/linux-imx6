@@ -288,7 +288,11 @@ static int e2i_read_data(struct usbtouch_usb *dev, unsigned char *pkt)
 {
 	int tmp = (pkt[0] << 8) | pkt[1];
 	dev->x  = (pkt[2] << 8) | pkt[3];
+#ifdef CONFIG_TOUCHSCREEN_USB_E2I_REVERSE
+	dev->y = 0x7fff - ((pkt[4] << 8) | pkt[5]);
+#else
 	dev->y  = (pkt[4] << 8) | pkt[5];
+#endif
 
 	tmp = tmp - 0xA000;
 	dev->touch = (tmp > 0);
