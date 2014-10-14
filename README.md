@@ -12,6 +12,7 @@ Target devices are:
  - Intel 802.11 a/b/g/n/ac PCIe mini card.
  - Atheros 802.11 a/b/g/n PCIe mini card.
  - faytech Touchscreen Monitor.
+ - Mimo UM-720-S Touchscreen Monitor.
  - TechNexion EDM1-Fairy Carrier Board(PCIe only).
 
 Branch
