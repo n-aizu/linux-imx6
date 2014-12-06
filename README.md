@@ -17,7 +17,7 @@ Target devices are:
 
 Branch
 -----------
-The latest 3.10.17 kernel is in branch [boundary-wand-imx\_3.10.17\_1.0.1\_ga-rt][latest-3.10.17]  
+The latest 3.10.17 kernel is in branch [boundary-wand-hb-imx\_3.10.17\_1.0.2\_ga-rt][latest-3.10.17]  
 
 Target
 -----------
@@ -34,5 +34,5 @@ For RT-Preempt kernel: nitrogen6x_rt_defconfig/wandboard_rt_defconfig/hummingboa
 [linux-imx6]: https://github.com/boundarydevices/linux-imx6.git "Boundary Devices Git repository"
 [wandboard-linux]: https://github.com/wandboard-org/linux.git "Wandboard Git repository"
 [solidrun-linaro]: https://github.com/SolidRun/linux-linaro-stable-mx6.git "SolidRun Git repository"
-[latest-3.10.17]: https://github.com/n-aizu/linux-imx6/tree/boundary-wand-imx_3.10.17_1.0.1_ga-rt "3.10.17 kernel tree"
+[latest-3.10.17]: https://github.com/n-aizu/linux-imx6/tree/boundary-wand-hb-imx_3.10.17_1.0.2_ga-rt "3.10.17 kernel tree"
 
