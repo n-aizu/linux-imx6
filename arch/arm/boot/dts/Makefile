@@ -135,10 +135,13 @@ dtb-$(CONFIG_ARCH_MXC) += \
 	imx6q-wandboard-jp.dtb \
 	imx6q-arm2.dtb \
 	imx6q-bt.dtb \
+	imx6q-insp.dtb \
 	imx6q-mtp.dtb \
 	imx6q-nitrogen6x.dtb \
+	imx6q-nitrogen6x-nolcd.dtb \
 	imx6q-nitrogen6x-cwc.dtb \
 	imx6q-nitrogen6_max.dtb \
+	imx6q-nitrogen6_max-nolcd.dtb \
 	imx6q-nitrogen6_mtp.dtb \
 	imx6q-per.dtb \
 	imx6q-sabreauto.dtb \
@@ -152,6 +155,7 @@ dtb-$(CONFIG_ARCH_MXC) += \
 	imx6q-sabresd-ldo.dtb \
 	imx6q-sbc6x.dtb \
 	imx6q-hummingboard.dtb \
+	imx6q-vp.dtb \
 	imx6sl-evk.dtb \
 	imx6sl-evk-csi.dtb \
 	imx6sl-evk-ldo.dtb \

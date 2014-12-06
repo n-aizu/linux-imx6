@@ -15,15 +15,11 @@
 
 #include <dt-bindings/interrupt-controller/irq.h>
 #include "imx6q.dtsi"
-#include "imx6qdl-nitrogen6x.dtsi"
+#include "imx6qdl-nitrogen6_max-nolcd.dtsi"
 
 / {
-	model = "Freescale i.MX6 Quad Nitrogen6x Board";
-	compatible = "fsl,imx6q-nitrogen6x", "fsl,imx6q";
-};
-
-&hdmi_core {
-	ipu_id = <1>;
+	model = "Freescale i.MX6 Quad Nitrogen6 Max Board";
+	compatible = "fsl,imx6q-nitrogen6_max", "fsl,imx6q";
 };
 
 &mxcfb1 {
@@ -44,11 +40,6 @@
 
 &ov5640 {
 	ipu_id = <1>;
-};
-
-&ov5640_mipi {
-	ipu_id = <1>;
-	csi_id = <0>;
 };
 
 &pinctrl_ov5640 { /* parallel camera */
@@ -72,10 +63,6 @@
 	status = "okay";
 };
 
-/* ov5640_mipi */
-&v4l2_cap_1 {
+&v4l2_cap_2 {
 	ipu_id = <1>;
-	csi_id = <0>;
-	mipi_camera = <1>;
 };
-

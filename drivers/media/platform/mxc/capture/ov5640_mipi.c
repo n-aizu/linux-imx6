@@ -2675,7 +2675,8 @@ static int trigger_auto_focus(void){
 
 static int ioctl_send_command(struct v4l2_int_device *s, struct v4l2_send_command_control *vc) {
 	int ret = -1;
-	int retval1,retval2;
+	int retval1;
+	u8 regval;
 	u8 loca_val=0;
 
 	switch (vc->id) {
@@ -2684,18 +2685,16 @@ static int ioctl_send_command(struct v4l2_int_device *s, struct v4l2_send_comman
 			if(vc->value0 < 0 || vc->value0 > 255)
 				return ret;
 			loca_val = vc->value0;
-			ov5640_write_reg(CMD_PARA3, 0);
-			ov5640_write_reg(CMD_PARA4, loca_val);
-			retval1=ov5640_write_reg(CMD_ACK, 0x01);
-			retval2=ov5640_write_reg(CMD_MAIN, 0x1a);
-			if(retval1 != 0 || retval2 != 0) {
-				pr_err("%s:error stepping to 0x%02x: %d/%d\n",
-				       __func__, vc->value0, retval1,retval2);
-				ret = -1;
-			} else {
-				pr_debug("step successful\n");
-				ret = 0;
+			retval1 = ov5640_read_reg(0x3602,&regval);
+			if (0 > retval1) {
+				pr_err("ov5640_read_reg(3602): %d\n", retval1);
+				return retval1;
 			}
+			regval &= 0x0f;
+			regval |= (loca_val&7) << 5; 	/* low 3 bits */
+			ov5640_write_reg(0x3602, regval);
+			ov5640_write_reg(0x3603, loca_val >> 3);
+			ret = 0;
 			break;
 		default:
 			pr_err("%s:Unknown ctrl 0x%x\n", __func__, vc->id);
@@ -3361,6 +3360,38 @@ static struct v4l2_int_device ov5640_int_device = {
 	},
 };
 
+static ssize_t show_reg(struct device *dev,
+			struct device_attribute *attr, char *buf)
+{
+	u8 val;
+	s32 rval = ov5640_read_reg(ov5640_data.last_reg, &val);
+
+	return sprintf(buf, "ov5640[0x%04x]=0x%02x\n",ov5640_data.last_reg, rval);
+}
+static ssize_t set_reg(struct device *dev,
+			struct device_attribute *attr,
+		       const char *buf, size_t count)
+{
+	int regnum, value;
+	int num_parsed = sscanf(buf, "%04x=%02x", &regnum, &value);
+	if (1 <= num_parsed) {
+		if (0xffff < (unsigned)regnum){
+			pr_err("%s:invalid regnum %x\n", __func__, regnum);
+			return 0;
+		}
+		ov5640_data.last_reg = regnum;
+	}
+	if (2 == num_parsed) {
+		if (0xff < (unsigned)value) {
+			pr_err("%s:invalid value %x\n", __func__, value);
+			return 0;
+		}
+		ov5640_write_reg(ov5640_data.last_reg, value);
+	}
+	return count;
+}
+static DEVICE_ATTR(ov5640_reg, S_IRUGO|S_IWUGO, show_reg, set_reg);
+
 /*!
  * ov5640 I2C probe function
  *
@@ -3489,6 +3520,8 @@ static int ov5640_probe(struct i2c_client *client,
 
 //	clk_disable_unprepare(ov5640_data.sensor_clk);
 
+	if (device_create_file(dev, &dev_attr_ov5640_reg))
+		dev_err(dev, "%s: error creating ov5640_reg entry\n", __func__);
 	pr_info("camera ov5640_mipi is found\n");
 	return retval;
 }

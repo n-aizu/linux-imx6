@@ -15,7 +15,7 @@
 
 #include <dt-bindings/interrupt-controller/irq.h>
 #include "imx6q.dtsi"
-#include "imx6qdl-nitrogen6x.dtsi"
+#include "imx6qdl-nitrogen6x-nolcd.dtsi"
 
 / {
 	model = "Freescale i.MX6 Quad Nitrogen6x Board";
