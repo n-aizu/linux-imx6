@@ -121,6 +121,9 @@
 		status = "okay";
 	};
 
+	i2c1mux: i2cmux@1 {
+	};
+
 	i2c2mux: i2cmux@2 {
 	};
 };
@@ -216,13 +219,21 @@
 		>;
 	};
 
+	pinctrl_ecspi2: ecspi2grp {
+		fsl,pins = <
+			MX6QDL_PAD_EIM_OE__ECSPI2_MISO		0x100b1
+			MX6QDL_PAD_EIM_CS1__ECSPI2_MOSI		0x100b1
+			MX6QDL_PAD_EIM_CS0__ECSPI2_SCLK		0x100b1
+#define GP_ECSPI2_GS2971_CS	<&gpio2 26 GPIO_ACTIVE_LOW>
+			MX6QDL_PAD_EIM_RW__GPIO2_IO26		0x0b0b0
+		>;
+	};
+
 	pinctrl_ecspi3: ecspi3grp {
 		fsl,pins = <
 			MX6QDL_PAD_DISP0_DAT2__ECSPI3_MISO	0x100b1
 			MX6QDL_PAD_DISP0_DAT1__ECSPI3_MOSI	0x100b1
 			MX6QDL_PAD_DISP0_DAT0__ECSPI3_SCLK	0x100b1
-#define GP_ECSPI3_GS2971_CS	<&gpio4 24 GPIO_ACTIVE_LOW>
-			MX6QDL_PAD_DISP0_DAT3__GPIO4_IO24	0x0b0b0		/* GS2971 */
 #define GP_ECSPI3_WM5102_CS	<&gpio4 25 GPIO_ACTIVE_LOW>
 			MX6QDL_PAD_DISP0_DAT4__GPIO4_IO25	0x0b0b0		/* WM5102 */
 		>;
@@ -287,8 +298,8 @@
 			MX6QDL_PAD_DISP0_DAT10__GPIO4_IO31	0x000b0		/* 0 - pin D7 - SW_EN - line lock enable */
 #define GP_GS2971_DVB_ASI	<&gpio5 5 GPIO_INPUT>
 			MX6QDL_PAD_DISP0_DAT11__GPIO5_IO05	0x1b0b0		/* pin G8 i/o DVB_ASI */
-#define GP_GS2971_SMPTE_BYPASS	<&gpio2 24 GPIO_INPUT>
-			MX6QDL_PAD_EIM_CS1__GPIO2_IO24		0x1b0b0		/* pin G7 - i/o SMPTE bypass */
+#define GP_GS2971_SMPTE_BYPASS	<&gpio2 27 GPIO_INPUT>
+			MX6QDL_PAD_EIM_LBA__GPIO2_IO27		0x1b0b0		/* pin G7 - i/o SMPTE bypass */
 #define GP_GS2971_DVI_LOCK	<&gpio3 14 GPIO_INPUT>
 			MX6QDL_PAD_EIM_DA14__GPIO3_IO14		0x1b0b0		/* pin B6 - stat3 - DVI_LOCK */
 #define GP_GS2971_DATA_ERR	<&gpio3 15 GPIO_INPUT>
@@ -313,6 +324,19 @@
 		>;
 	};
 
+	pinctrl_i2c1mux: i2c1muxgrp {
+		fsl,pins = <
+#define GP_I2C1_MUX_TC3587	 <&gpio6 16 GPIO_ACTIVE_HIGH>
+			MX6QDL_PAD_NANDF_CS3__GPIO6_IO16	0x030b0
+#define GP_I2C1_MUX_KL04	<&gpio5 27 GPIO_ACTIVE_HIGH>
+			MX6QDL_PAD_CSI0_DAT9__GPIO5_IO27	0x030b0
+#define GP_I2C1_MUX_ANX7814	<&gpio1 10 GPIO_ACTIVE_HIGH>
+			MX6QDL_PAD_SD2_CLK__GPIO1_IO10		0x030b0
+#define GP_I2C1_MUX_AX7738	<&gpio2 1 GPIO_ACTIVE_HIGH>
+			MX6QDL_PAD_NANDF_D1__GPIO2_IO01		0x030b0
+		>;
+	};
+
 	pinctrl_i2c2: i2c2grp {
 		fsl,pins = <
 			MX6QDL_PAD_KEY_COL3__I2C2_SCL	0x4001b8b1
@@ -322,8 +346,8 @@
 
 	pinctrl_i2c2mux: i2c2muxgrp {
 		fsl,pins = <
-#define GP_I2C2_MUX_TC3587 <&gpio6 16 GPIO_ACTIVE_HIGH>
-			MX6QDL_PAD_NANDF_CS3__GPIO6_IO16	0x000b0		/* TC3587 i2c enable */
+#define GP_I2C2_MUX_ANX7814_DDC	 <&gpio1 15 GPIO_ACTIVE_HIGH>
+			MX6QDL_PAD_SD2_DAT0__GPIO1_IO15		0x030b0
 		>;
 	};
 
@@ -513,11 +537,11 @@
 	};
 };
 
-&ecspi3 {
-	fsl,spi-num-chipselects = <2>;
-	cs-gpios = GP_ECSPI3_GS2971_CS, GP_ECSPI3_WM5102_CS;
+&ecspi2 {
+	fsl,spi-num-chipselects = <1>;
+	cs-gpios = GP_ECSPI2_GS2971_CS;
 	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_ecspi3>;
+	pinctrl-0 = <&pinctrl_ecspi2>;
 	status = "okay";
 
 	gs2971: gs2971@0 {
@@ -546,9 +570,18 @@
 		lb_cont-gpios = GP_GS2971_LB_CONT;	/* in */
 		y_1anc-gpios = GP_GS2971_Y_1ANC;	/* in */
 	};
-	codec: wm5102@1 {
+};
+
+&ecspi3 {
+	fsl,spi-num-chipselects = <1>;
+	cs-gpios = GP_ECSPI3_WM5102_CS;
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_ecspi3>;
+	status = "okay";
+
+	codec: wm5102@0 {
 		compatible = "wlf,wm5102";
-		reg = <1>;
+		reg = <0>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&pinctrl_wm5102>;
 		clocks = <&clks 200>, <&clks 1>;
@@ -619,42 +652,64 @@
 	/* microcontroller KL04Z32TFK4 */
 };
 
-&i2c2 {
-	clock-frequency = <100000>;
-	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_i2c2>;
-	status = "okay";
-
-	hdmi: edid@50 {
-		compatible = "fsl,imx6-hdmi-i2c";
-		reg = <0x50>;
-	};
-};
-
-&i2c2mux {
+&i2c1mux {
 	compatible = "i2c-mux-gpio";
 	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_i2c2mux>;
+	pinctrl-0 = <&pinctrl_i2c1mux>;
 	#address-cells = <1>;
 	#size-cells = <0>;
-	mux-gpios = GP_I2C2_MUX_TC3587;
-	i2c-parent = <&i2c2>;
+	mux-gpios = GP_I2C1_MUX_TC3587, GP_I2C1_MUX_KL04, GP_I2C1_MUX_ANX7814, GP_I2C1_MUX_AX7738;
+	i2c-parent = <&i2c1>;
 	idle-state = <0>;
 
-	i2c2a: i2c2@0 {
+	i2c1@0 {
 		reg = <0>;
 		#address-cells = <1>;
 		#size-cells = <0>;
 	};
-
-	i2c2b: i2c2@1 {
+	i2c1a: i2c1@1 {
 		reg = <1>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+	};
+	i2c1b: i2c1@2 {
+		reg = <2>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+	};
+	i2c1@3 {
+		reg = <3>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+	};
+	i2c1c: i2c1@4 {
+		reg = <4>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+	};
+	i2c1@5 {
+		reg = <5>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+	};
+	i2c1@6 {
+		reg = <6>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+	};
+	i2c1@7 {
+		reg = <7>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+	};
+	i2c1d: i2c1@8 {
+		reg = <8>;
 		#address-cells = <1>;
 		#size-cells = <0>;
 	};
 };
 
-&i2c2b {
+&i2c1a {
 	tc358743_mipi: tc358743_mipi@0f {
 		compatible = "tc358743_mipi";
 		reg = <0x0f>;
@@ -668,6 +723,44 @@
 		mclk_source = <0>;
 	};
 };
+
+&i2c2 {
+	clock-frequency = <100000>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_i2c2>;
+	status = "okay";
+};
+
+&i2c2mux {
+	compatible = "i2c-mux-gpio";
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_i2c2mux>;
+	#address-cells = <1>;
+	#size-cells = <0>;
+	mux-gpios = GP_I2C2_MUX_ANX7814_DDC;
+	i2c-parent = <&i2c2>;
+	idle-state = <0>;
+
+	i2c2@0 {
+		reg = <0>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+	};
+
+	i2c2a: i2c2@1 {
+		reg = <1>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+	};
+};
+
+&i2c2a {
+	hdmi: edid@50 {
+		compatible = "fsl,imx6-hdmi-i2c";
+		reg = <0x50>;
+	};
+};
+
 
 &i2c3 {
 	clock-frequency = <100000>;
