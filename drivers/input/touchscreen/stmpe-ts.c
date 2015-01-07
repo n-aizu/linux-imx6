@@ -78,6 +78,7 @@ struct stmpe_touch {
 	u8 settling;
 	u8 fraction_z;
 	u8 i_drive;
+	u16 rotate;
 };
 
 static int __stmpe_reset_fifo(struct stmpe *stmpe)
@@ -127,7 +128,7 @@ static void stmpe_work(struct work_struct *work)
 static irqreturn_t stmpe_ts_handler(int irq, void *data)
 {
 	u8 data_set[4];
-	int x, y, z;
+	int x, y, z, savex;
 	struct stmpe_touch *ts = data;
 
 	/*
@@ -150,6 +151,25 @@ static irqreturn_t stmpe_ts_handler(int irq, void *data)
 	x = (data_set[0] << 4) | (data_set[1] >> 4);
 	y = ((data_set[1] & 0xf) << 8) | data_set[2];
 	z = data_set[3];
+
+	switch (ts->rotate) {
+	case 90 :
+		savex = x;
+		x = y;
+		y = 0x0fff - savex;
+		break;
+	case 180 :
+		x = 0x0fff - x;
+		y = 0x0fff - y;
+		break;
+	case 270 :
+		savex = x;
+		x = 0x0fff - y;
+		y = savex;
+		break;
+	default :
+		break;
+	}
 
 	input_report_abs(ts->idev, ABS_X, x);
 	input_report_abs(ts->idev, ABS_Y, y);
@@ -273,6 +293,7 @@ static void stmpe_ts_get_platform_info(struct platform_device *pdev,
 	struct stmpe_ts_platform_data *ts_pdata = NULL;
 
 	ts->stmpe = stmpe;
+	ts->rotate = 0;
 
 	if (stmpe->pdata && stmpe->pdata->ts) {
 		ts_pdata = stmpe->pdata->ts;
@@ -307,6 +328,13 @@ static void stmpe_ts_get_platform_info(struct platform_device *pdev,
 			ts->fraction_z = val;
 		if (!of_property_read_u32(np, "st,i-drive", &val))
 			ts->i_drive = val;
+
+		/* Workaround: rotate is suppoeted only in device tree */
+		if (!of_property_read_u32(np, "st,rotate", &val))
+			ts->rotate = val;
+		if (ts->rotate != 0 && ts->rotate != 90 &&
+			ts->rotate != 180 && ts->rotate != 270)
+			ts->rotate = 0;
 	}
 }
 
